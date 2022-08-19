@@ -193,6 +193,7 @@ global::global() : TABBER(1), gLoopDetector(1024, 400), gStackOverflowDetector(M
     gComputeMix           = false;
     gFastMathLib          = "default";
     gNameSpace            = "";
+    gLessParenthesis      = false;
 
     gNarrowingLimit = 0;
     gWideningLimit = 0;

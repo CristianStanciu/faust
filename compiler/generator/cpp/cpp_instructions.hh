@@ -382,14 +382,25 @@ class CPPInstVisitor : public TextInstVisitor {
         inst->fAddress->accept(this);
     }
     
+    
     virtual bool needParenthesis(BinopInst* inst, ValueInst* arg)
     {
-        int p0 = gBinOpTable[inst->fOpcode]->fPriority;
-        BinopInst* a = dynamic_cast<BinopInst*>(arg);
-        int p1 = a ? gBinOpTable[a->fOpcode]->fPriority : INT_MAX;
-        return (isLogicalOpcode(inst->fOpcode) || (p0 > p1))
-            && !arg->isSimpleValue()
-            && !dynamic_cast<CastInst*>(arg); // C++ cast add a parenthesis
+        // Simple values like numbers or variables do not need parenthesis
+        // C++ cast already adds a parenthesis
+        if (arg->isSimpleValue() || dynamic_cast<CastInst*>(arg) || dynamic_cast<FunCallInst*>(arg)) {
+            return false;
+        } else if (!gGlobal->gLessParenthesis) {
+            return true;
+        }  else {
+            int p0 = gBinOpTable[inst->fOpcode]->fPriority;
+            BinopInst* a = dynamic_cast<BinopInst*>(arg);
+            int p1 = a ? gBinOpTable[a->fOpcode]->fPriority : INT_MAX;
+            // Criteria for parenthesis in order
+            bool b1 = p0 > p1;
+            bool b2 = (p0 == p1) && (inst->fOpcode != a->fOpcode);
+            bool b3 = (p0 == p1) && (inst->fOpcode == a->fOpcode) && !gBinOpTable[inst->fOpcode]->fAssociativity;
+            return b1 || b2 || b3;
+         }
     }
     
     virtual void visit(BinopInst* inst)

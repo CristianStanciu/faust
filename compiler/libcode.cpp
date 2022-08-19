@@ -624,6 +624,10 @@ static bool processCmdline(int argc, const char* argv[])
         } else if (isCmd(argv[i], "-ns", "--namespace")) {
             gGlobal->gNameSpace = argv[i + 1];
             i += 2;
+            
+        } else if (isCmd(argv[i], "-lp", "--less-parenthesis")) {
+            gGlobal->gLessParenthesis = true;
+            i += 1;
 
         } else if (isCmd(argv[i], "-I", "--import-dir") && (i + 1 < argc)) {
             if ((strstr(argv[i + 1], "http://") != 0) || (strstr(argv[i + 1], "https://") != 0)) {
@@ -952,9 +956,9 @@ static void printHelp()
             "auto-vectorization."
          << endl;
     cout << tab
-         << "-nvi        --no-virtual                when compiled with the C++ backend, does not add the 'virtual' "
-            "keyword."
-         << endl;
+       << "-nvi        --no-virtual                when compiled with the C++ backend, does not add the 'virtual' keyword." << endl;
+    cout << tab
+         << "-lp         --less-parenthesis          avoid some parenthesis in binary math operations by following C operator precedence." << endl;
     cout << tab << "-exp10      --generate-exp10            pow(10,x) replaced by possibly faster exp10(x)." << endl;
     cout << tab << "-os         --one-sample                generate one sample computation (same as -os0)." << endl;
     cout << tab << "-os0        --one-sample0               generate one sample computation (0 = separated control)."
